@@ -1,0 +1,15 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Abhängigkeiten installieren
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Für Entwicklung wird der gesamte Code über Volumes gemountet
+
+# Port freigeben
+EXPOSE 5000
+
+# Entwicklungs-Server starten
+CMD ["python", "-m", "flask", "--app", "src/web/app.py", "run", "--host=0.0.0.0"]
