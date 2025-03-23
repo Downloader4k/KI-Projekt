@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI mit Persönlichkeit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        h1 {
+            color: #56b6c2;
+        }
+        #chatbox {
+            height: 400px;
+            border: 1px solid #444;
+            padding: 10px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            background-color: #1e1e1e;
+        }
+        .user-message {
+            color: #61afef;
+            margin-bottom: 10px;
+        }
+        .ai-message {
+            color: #98c379;
+            margin-bottom: 10px;
+        }
+        #userinput {
+            width: 80%;
+            padding: 10px;
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+            border: 1px solid #444;
+        }
+        #send {
+            padding: 10px 20px;
+            background-color: #56b6c2;
+            color: #1e1e1e;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #emotion-display {
+            margin-top: 10px;
+            font-style: italic;
+            color: #888;
+        }
+        #intent-display {
+            margin-top: 5px;
+            font-style: italic;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>KI mit Persönlichkeit</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="userinput" placeholder="Nachricht eingeben...">
+    <button id="send">Senden</button>
+    <div id="emotion-display">Aktuelle Emotion: Neutral</div>
+    <div id="intent-display">Erkannter Intent: Unbekannt</div>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const userinput = document.getElementById('userinput');
+        const send = document.getElementById('send');
+        const emotionDisplay = document.getElementById('emotion-display');
+        const intentDisplay = document.getElementById('intent-display');
+        
+        // Nachricht senden
+        function sendMessage() {
+            const message = userinput.value.trim();
+            if (!message) return;
+            
+            // Benutzernachricht anzeigen
+            chatbox.innerHTML += `<div class="user-message"><strong>Sie:</strong> ${message}</div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+            userinput.value = '';
+            
+            // Anfrage an den Server senden
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // KI-Antwort anzeigen
+                chatbox.innerHTML += `<div class="ai-message"><strong>KI:</strong> ${data.response}</div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+                
+                // Emotion anzeigen
+                emotionDisplay.textContent = `Aktuelle Emotion: ${data.emotion} (Intensität: ${(data.emotion_intensity * 100).toFixed(0)}%)`;
+                
+                // Intent anzeigen
+                if (data.intent) {
+                    intentDisplay.textContent = `Erkannter Intent: ${data.intent}`;
+                }
+            })
+            .catch(error => {
+                console.error('Fehler:', error);
+                chatbox.innerHTML += `<div class="ai-message"><strong>Fehler:</strong> Die Verbindung zum Server konnte nicht hergestellt werden.</div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+        }
+        
+        // Event-Listener hinzufügen
+        send.addEventListener('click', sendMessage);
+        userinput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
