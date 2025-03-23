@@ -1,0 +1,7 @@
+flask==2.3.3
+redis==5.0.1
+chromadb==0.4.18
+sentence-transformers==2.4.0
+langchain>=0.1.1
+langchain-community>=0.3.0
+numpy>=1.22.0
