@@ -1,0 +1,10 @@
+{
+    "model_type": "deepseek-7b",
+    "context_size": 2048,
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "top_k": 40,
+    "max_tokens": 512,
+    "stop_sequences": ["Benutzer:", "\n\n"],
+    "system_prompt_template": "Du bist {name}, ein hilfsbereicher Assistent. Deine aktuelle Emotionslage ist: {emotion}. Du hilfst dem Benutzer, antwortest auf Fragen und verhältst dich gemäß deiner Persönlichkeit und aktuellen Emotionen."
+}
